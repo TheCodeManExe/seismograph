@@ -1,0 +1,8 @@
+const colors = ['orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'purple', 'white', 'lightorange', 'lightyellow', 'lightgreen', 'lightblue', 'darkorange', 'darkyellow', 'darkgreen', 'darkblue', 'darkindigo', 'darkviolet', 'darkpurple'];
+        let body = document.querySelector('body');
+        let i = 0
+        setInterval(() => {
+            body.style.backgroundColor = colors[i];
+            if( i >= colors.length - 1) i = 0;
+            else i++;
+        }, 200);
