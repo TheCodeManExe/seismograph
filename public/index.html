@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Earthquake Simulator</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+    </style>
 </head>
-
 <body>
     <div style="background-color: black; height: 1vh; margin-top: 35vh;" id="normal"></div>
-    <div style="background-color: red; height: 20vh; width: 40vw; margin: auto; left: 50%; transform: translate(-50%, -50%); position: absolute; font-size: 3rem; text-align: center; font-weight: 900; "
+    <div style="background-color: red; height: 20vh; width: 40vw; margin: auto; left: 50%; transform: translate(-50%, -50%); position: absolute; font-size: 3rem; font-weight: 900;"
         id="object">By: Sanjith, Anirudh and Viswa</div>
 
     <canvas id="seismograph" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 200px; background: #222; border-top: 3px solid #fff;"></canvas>
 
-
     <script>
-        const ctx = document.getElementById("seismograph").getContext("2d");
-        let xContext
+        const object = document.getElementById("object");
+        const canvas = document.getElementById("seismograph");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = 200;
         
-        function followMouse(event) {
-            var normal = document.getElementById("normal");
-            var object = document.getElementById("object");
+        let xOffset = 0;
+        let movement = 0;
+        let prevX = 0, prevY = 0;
 
+        function followMouse(event) {
+            let dx = event.clientX - prevX;
+            let dy = event.clientY - prevY;
+            movement = Math.sqrt(dx * dx + dy * dy);
+            prevX = event.clientX;
+            prevY = event.clientY;
             var viewportHeight = window.innerHeight;
-            var normalTopVH = (normal.offsetTop / viewportHeight) * 100;
+            var normalTopVH = (normal.offsetTop / viewportHeight) * 100;    
 
             var minYVH = normalTopVH - 20;
             var maxYVH = normalTopVH + 20;
@@ -31,12 +40,28 @@
             yVH = Math.max(minYVH, Math.min(yVH, maxYVH));
 
             object.style.top = yVH + "vh";
-
-            
         }
 
+        function drawSeismograph() {
+            ctx.fillStyle = "#222";
+            ctx.fillRect(xOffset, 0, 3, canvas.height);
+
+            ctx.strokeStyle = "#0f0";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(xOffset, canvas.height / 2);
+            ctx.lineTo(xOffset, canvas.height / 2 - movement * 5);
+            ctx.stroke();
+
+            xOffset += 2;
+            if (xOffset >= canvas.width) {
+                xOffset = 0;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        setInterval(drawSeismograph, 1000 / 60);
         document.addEventListener("mousemove", followMouse);
     </script>
 </body>
-
 </html>
