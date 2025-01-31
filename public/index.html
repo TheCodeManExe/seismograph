@@ -7,12 +7,43 @@
 
 <body>
     <div style="background-color: black; height: 1vh; margin-top: 30vh;" id="normal"></div>
-    <div style="background-color: red; height: 5vh; width: 20vw; margin: auto" id="object"></div>
+    <div style="background-color: red; height: 20vh; width: 40vw; margin: auto;" id="object"></div>
 
     <canvas id="seismograph"></canvas>
 
-    <p style="font-size: 2rem;">By: Sanjith, Anirudh, and Viswa<br>From: 7 Earth</p>
-</body>
+    <p style="font-size: 3rem; font-weight: 800;">By: Sanjith, Anirudh, and Viswa<br>From: 7 Earth</p>
 
+    <script>
+        let follower = document.getElementById('object');
+        function followMouse(e) {
+            let dx = e.clientX - prevX;
+            let dy = e.clientY - prevY;
+            let movement = Math.sqrt(dx * dx + dy * dy); // Calculate movement intensity
+
+            // Move the object to follow the mouse
+            follower.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+
+            // Simulate shaking effect
+            if (movement > 2) {
+                if (!shaking) {
+                    shaking = true;
+                    setTimeout(() => shaking = false, 100); // Stop shaking after a short delay
+                }
+                follower.style.transform += `translate(${Math.random() * 8 - 4}px, ${Math.random() * 8 - 4}px)`;
+            }
+        }
+
+        document.addEventListener("mousemove", followMouse);
+
+        const colors = ['orange', 'yellow', 'green', 'blue', 'indigo', 'violet', 'purple'];
+        let body = document.querySelector('body');
+        let i = 0
+        setInterval(() => {
+            body.style.backgroundColor = colors[i];
+            if( i >= colors.length - 1) i = 0;
+            else i++;
+        }, 200);
+    </script>
+</body>
 </html>
 <!--seismograph.vercel.app-->
