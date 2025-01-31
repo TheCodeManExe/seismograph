@@ -7,27 +7,32 @@
 
 <body>
     <div style="background-color: black; height: 1vh; margin-top: 35vh;" id="normal"></div>
-    <div style="background-color: red; height: 20vh; width: 40vw; margin: auto; left: 50%; transform: translate(-50%, -50%); position: absolute;" id="object"></div>
+    <div style="background-color: red; height: 20vh; width: 40vw; margin: auto; left: 50%; transform: translate(-50%, -50%); position: absolute; font-size: 3rem; text-align: center; font-weight: 900; "
+        id="object">By: Sanjith, Anirudh and Viswa</div>
 
-    <canvas id="seismograph"></canvas>
+    <canvas id="seismograph" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 200px; background: #222; border-top: 3px solid #fff;"></canvas>
 
-    <p style="font-size: 3rem; font-weight: 800;">By: Sanjith, Anirudh, and Viswa<br>From: 7 Earth</p>
 
     <script>
+        const ctx = document.getElementById("seismograph").getContext("2d");
+        let xContext
+        
         function followMouse(event) {
             var normal = document.getElementById("normal");
             var object = document.getElementById("object");
 
-            var viewportHeight = window.innerHeight; 
+            var viewportHeight = window.innerHeight;
             var normalTopVH = (normal.offsetTop / viewportHeight) * 100;
 
             var minYVH = normalTopVH - 20;
             var maxYVH = normalTopVH + 20;
 
-            var yVH = (event.clientY / viewportHeight) * 100; 
+            var yVH = (event.clientY / viewportHeight) * 100;
             yVH = Math.max(minYVH, Math.min(yVH, maxYVH));
 
-            object.style.top = yVH + "vh"; 
+            object.style.top = yVH + "vh";
+
+
         }
 
         document.addEventListener("mousemove", followMouse);
