@@ -7,9 +7,9 @@
     </style>
 </head>
 <body>
-    <div style="background-color: black; height: 1vh; margin-top: 35vh;" id="normal"></div>
+    <div style="background-color: black; height: 1vh; margin-top: 35vh;  font-size: 3rem; font-weight: 900;" id="normal">By: Sanjith, Anirudh<br> and Viswa</div>
     <div style="background-color: red; height: 20vh; width: 40vw; margin: auto; left: 50%; transform: translate(-50%, -50%); position: absolute; font-size: 3rem; font-weight: 900;"
-        id="object">By: Sanjith, Anirudh and Viswa</div>
+        id="object"></div>
 
     <canvas id="seismograph" style="position: fixed; bottom: 0; left: 0; width: 100%; height: 200px; background: #222; border-top: 3px solid #fff;"></canvas>
 
@@ -29,7 +29,7 @@
         function followMouse(event) {
             let dx = event.clientX - prevX;
             let dy = event.clientY - prevY;
-            movement = Math.sqrt(dx * dx + dy * dy);
+            movement = Math.sqrt(2*dx * dx);
             prevX = event.clientX;
             prevY = event.clientY;
             var viewportHeight = window.innerHeight;
