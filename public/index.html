@@ -18,11 +18,13 @@
         const canvas = document.getElementById("seismograph");
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
-        canvas.height = 300;
+        canvas.height = 200;
         
         let xOffset = 0;
+        let yBase = canvas.height / 2;
         let movement = 0;
         let prevX = 0, prevY = 0;
+        let waveData = [];
 
         function followMouse(event) {
             let dx = event.clientX - prevX;
@@ -44,21 +46,27 @@
 
         function drawSeismograph() {
             ctx.fillStyle = "#222";
-            ctx.fillRect(xOffset, 0, 3, canvas.height);
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.strokeStyle = "#0f0";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(xOffset, canvas.height / 2);
-            ctx.lineTo(xOffset, canvas.height / 2 - movement * 5);
-            ctx.stroke();
-
-            xOffset += 2;
-            if (xOffset >= canvas.width) {
-                xOffset = 0;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (waveData.length > canvas.width) {
+                waveData.shift();
             }
+
+            waveData.push(yBase - movement * 5);
+
+            ctx.moveTo(0, waveData[0]);
+            for (let i = 1; i < waveData.length; i++) {
+                ctx.lineTo(i, waveData[i]);
+            }
+            ctx.stroke();
+            
+            xOffset++;
         }
+
 
         setInterval(drawSeismograph, 1000 / 60);
         document.addEventListener("mousemove", followMouse);
