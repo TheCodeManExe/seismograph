@@ -9,34 +9,69 @@
             overflow: hidden;
             background-color: rgb(15, 15, 15)
         }
+
+        #magnitude {
+            position: absolute;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgb(107, 106, 106);
+            top: 50%;
+            left: calc(50% + 20vw);
+            transform: translateY(-50%);
+            transition: none; /* No transition for instant updates */
+        }
+
+        #object {
+            background-color: red;
+            height: 20vh;
+            width: 40vw;
+            margin: auto;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            line-height: 20vh;
+        }
     </style>
 </head>
 <body>
     <a style="font-size: 1.5rem; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; margin-top: 0vh; color: rgb(107, 106, 106);" href="/info.html" target="_blank">More Info</a>
     <p style="font-size: 3rem; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; margin-top: -5vh; color: rgb(107, 106, 106); margin-left: 60vh;">By: Sanjith, Anirudh and Viswa</p>
     <div style="height: 1vh; margin-top: 35vh;  font-size: 3rem; font-weight: 900;" id="normal"></div>
-    <div style="background-color: red; height: 20vh; width: 40vw; margin: auto; left: 50%; transform: translate(-50%, -50%); position: absolute; font-size: 3rem; font-weight: 900;"
-        id="object"></div>
-
+    <div id="object"></div>
+    <div id="magnitude">Magnitude: 0</div>
     <canvas id="seismograph"
         style="position: fixed; bottom: 0; left: 0; width: 100%; height: 180px; background: #222; border-top: 0px solid #fff;"></canvas>
     <script>
         const object = document.getElementById("object");
+        const magnitudeText = document.getElementById("magnitude");
         const canvas = document.getElementById("seismograph");
         const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = 200;
 
         let xOffset = 0;
-        let yBase = 195
+        let yBase = 195;
         let movement = 0;
         let prevY = 0;
         let waveData = [];
+        let lastMoveTime = 0;
+        const inactivityThreshold = 200;
+        const dampingFactor = 0.98;
+        const maxMagnitude = 10;  // Maximum magnitude to show
 
         function followMouse(event) {
+            const now = Date.now();
             let dy = event.clientY - prevY;
-            movement = Math.sqrt(2 * (dy * dy));
+            movement = Math.abs(dy) * 0.2;  // Smoother magnitude calculation
             prevY = event.clientY;
+
+            if (movement > 0) {
+                lastMoveTime = now;
+            }
+
             var viewportHeight = window.innerHeight;
             var normalTopVH = (normal.offsetTop / viewportHeight) * 100;
 
@@ -72,10 +107,25 @@
             xOffset++;
         }
 
+        function resetMagnitudeIfInactive() {
+            const now = Date.now();
+            if (now - lastMoveTime > inactivityThreshold) {
+                movement *= dampingFactor;  // Smoothly decay the magnitude when inactive
+            }
+        }
 
-        setInterval(drawSeismograph, 1000 / 60);
+        function syncMagnitudeWithGraph() {
+            const magnitude = Math.min(movement, maxMagnitude);  // Limit magnitude to maxMagnitude
+            magnitudeText.textContent = `Magnitude: ${magnitude.toFixed(2)}`; // Sync magnitude display with movement
+        }
+
+        setInterval(() => {
+            drawSeismograph();
+            resetMagnitudeIfInactive();
+            syncMagnitudeWithGraph();  // Sync the magnitude with the graph's movement
+        }, 1000 / 60);
+
         document.addEventListener("mousemove", followMouse);
     </script>
 </body>
-
 </html>
